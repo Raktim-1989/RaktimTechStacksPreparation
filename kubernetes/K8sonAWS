@@ -1,0 +1,45 @@
+1. Login to AWS Account - launch 3 instace - ubuntu 16.04 (t2 medium)
+2. Mater must have 2 CPU and 4GB RAM
+3. Now using puttygen create private key & save
+4. access all the 3 resources (master , 2 nodes) using putty
+
+Commands for Master & Node 
+1. sudo su 
+2. apt-get update
+3. aapt-get install apt-transport-https
+  //https is needed for intra communication in cluster
+4. Now install docker in all 3 instances 
+   sudo apt install docker.io -y 
+   check docker installed or not 
+   docker --version
+   systemctl start docker
+   systemctl enable docker 
+5. Setup open GPG key , this is required for intra cluster communication. It will be added to source key on this node which means , when k8s sends signed info to our host , or master sends something to node , it is going to accept those information . because this open GPG key is present in the source key . 
+  sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+       
+6. Install kubernetes in 3 nodes  -
+   Edit sources list file (apt-get install nano)
+   nano /etc/apt/sources.list.d/kubernetes.list
+   deb http://apt.kubernetes.io/ kubernetes-xenial main  
+   exit from nano - > CNTL + X -> caps+Y ->ENTER
+7. apt-get update -     install all packages 
+8. apt-get install -y kubelet kubeadm kubectl kubernetes-cni  
+
+### BootStrapping the Master Node (in master) ###
+This is to establish the connection between master & nodes 
+1. To initialize K8s cluster 
+   kubeadm init
+   we will get one long command started from "kubeadm join 172.31.6.6.165:6443"
+   copy the command and save on notepad
+2. Create both .kube and its parent direxctory
+   mkdir -p $HOME/.kube
+3. Copy configuration to kube directory(in config file)   
+   cp -i /etc/kubernetes/admin.conf $HOME/.kube/config      
+4. Provide user permissions in config file
+   chown $(id -u):$(id -g) $HOME/.kube/config   
+5. sudo kubectl apply https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml   
+6. sudo kubectl apply https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
+
+7. Now configure the worker node
+   paste the command in both nodes to match the connection 
+8. now finally in master , kubectl get nodes !!

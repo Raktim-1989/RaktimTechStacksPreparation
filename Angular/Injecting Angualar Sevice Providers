@@ -1,0 +1,107 @@
+### Angualr Service ###
+1. In Angualr service is a class, the function of service is storing the
+   data , manupulatating the data and function of components is to render the service back into browser or UI. 
+2. Component shows the data in UI by taking from Service. 
+3. Service can be injected inside component(if we wnat to use service methods inside component.ts) by calling its object 
+   in the constructor. //dependency injection
+Scenario: Once clicking the [AddToCart] button products will be stored 
+          in the products array.
+Steps:
+1. ng generate service cartservice
+2. In cart.service.ts file create the following service 
+   products: ProductContract[] = [];
+    addProductsToCart(product: ProductContract)
+    {
+        this.products.push(product);
+    }
+
+    getProducts()
+    {
+        return this.products;   //return array after adding all product
+    }
+3.  In the product-shop.component.ts file customise the addToCart() -
+    addToCart()
+    {
+      this.cart.addProductsToCart(this.product); //addToCart is invoked here
+
+    }   
+4.  Before that add the dependency injection now in product-shop.
+    component.ts
+    constructor(private cart:CartService)
+        {
+
+        }
+    addToCart()
+    {
+      this.cart.addProductsToCart(this.product); //addToCart is invoked here
+    }   
+5. Create a cart component and call getProducts() and check whether 
+   all products retrieved successfully or not
+   ng generate component cartcomponent
+6. Inject the getProducts() service inside the cart-component.ts by calling its object inside constructore
+   constructor(private cart:CartService) 
+        {
+
+        }
+    products:ProductContract[] = this.cart.getProducts();  //calling the method and storing the result in a local products variable to access html
+7. Nosw in cartcomponent.html we can tweek with our 'prodycts' local variable
+example:
+<div class="media-body">
+                                <h4 class="media-heading"><a href="#">{{product.name}}</a></h4>
+                            <span>Status: </span><span class="text-success"><strong>{{product.status}}</strong></span>
+                            </div>       
+ 
+### Iterate the product items from addtocart to cart component ###
+ <tr *ngFor="let product of products">
+                        <td class="col-sm-8 col-md-6">
+                        <div class="media">
+                            <a class="thumbnail pull-left" href="#"> <img class="media-object" src={{product.imgaddress}} style="width: 72px; height: 72px;"> </a>
+                            <div class="media-body">
+                                <h4 class="media-heading"><a href="#">{{product.name}}</a></h4>
+                            <span>Status: </span><span class="text-success"><strong>{{product.status}}</strong></span>
+                            </div>
+                        </div></td>
+                        <td class="col-sm-1 col-md-1" style="text-align: center">
+                        <input #quantity (keyup)="onKey(product, quantity.value)" type="email" class="form-control" id="exampleInputEmail1" value=1>
+                        </td>
+                        <td class="col-sm-1 col-md-1 text-center"><strong>{{product.price}}</strong></td>
+                        <td class="col-sm-1 col-md-1 text-center"><strong>{{calculation(product.price , quantity.value)}}</strong></td>
+                        <td class="col-sm-1 col-md-1">
+                        <button type="button" (click)="deleteProduct(product)" class = "btn btn-danger">
+                            <span class="glyphicon glyphicon-remove"></span> Remove
+                        </button></td>
+                    </tr>
+
+### template variable concept ###
+
+ <input #quantity (keyup)="onKey(product, quantity.value)" type="email" class="form-control" id="exampleInputEmail1" value=1>
+
+1. #quantity is a template reference variable which will hold the value we enter during runtime
+2. (keyup) is an event in angular , whenever we start typing in the editbox 
+
+
+
+### Delete Product ###
+ <td class="col-sm-1 col-md-1">
+ <button type="button" (click)="deleteProduct(product)" class = "btn btn-danger">
+                            <span class="glyphicon glyphicon-remove"></span> Remove
+</button>
+</td>
+
+In component.ts
+deleteProduct(product:any)
+  {
+      const index = this.products.indexOf(product);
+      this.products.splice(index ,1);   //it means it will delete that specific index product and will delete till 1 index 
+     
+      this.updateSum();  //this will updatethe sum again after deletion
+    
+  }
+//Once that prodict is getting deleted, the page will be reloading again with the latest [products] array 
+
+
+
+
+   
+    
+

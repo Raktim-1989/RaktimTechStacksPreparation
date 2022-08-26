@@ -1,0 +1,148 @@
+<div class = "MyContainer">
+
+<form >
+    <div class="form-group">
+        <label for="exampleInputEmail1">First Name</label>
+        <input type="Name"  class="form-control" id="NameInput" aria-describedby="emailHelp" placeholder="Enter First Name">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Last Name</label>
+            <input type="LastName" class="form-control" id="LastNameInput" aria-describedby="emailHelp" placeholder="Enter Last Name">
+            </div>
+    <div class="form-group">
+      <label for="exampleInputEmail1">Email address</label>
+      <input type="email"  class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+      <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+    </div>
+    <div class="form-group">
+      <label for="exampleInputPassword1">Password</label>
+      <input type="password"  class="form-control" id="exampleInputPassword1" placeholder="Password">
+    </div>
+    <div class="form-group form-check">
+      <input type="checkbox" class="form-check-input" id="exampleCheck1">
+      <label class="form-check-label" for="exampleCheck1">Check me out</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <p>{{msg}}</p>
+  </form>
+
+</div>
+
+### Inject Angular in the above form ###
+1. ng-Model:ngModel is a directive when user wants to bind input,select,textarea 
+            and stores the required user value in a variable and we can use that 
+            variable when we required .
+
+Usage: How ngModel works !!
+i. In component.ts file we declare a variable 
+   msg: string="gmail.com"
+ii. in .html lets configure this variable with [ngModel] 
+    also, add a name attribute (mandatory)
+    <div class="form-group">
+        <label for="exampleInputEmail1">Email address</label>
+        <input type="email" [ngModel] = "msg" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+    </div>        
+iii. To use the above [ngModel] import 'FormsModule' in yr project 
+     app.module.ts 
+        imports: [
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,   //added
+        
+    ]        
+iv. now if we change any value in application in the msg variable
+    and then we want that 'msg' variable to store the value we have to perform 
+    (EventBinding) in ngModel as following 
+    <div class="form-group">
+        <label for="exampleInputEmail1">Email address</label>
+        <input type="email" [(ngModel)] = "msg" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+    </div>  
+   //if we write raktim123@gmail.com then this msg variable will store 
+     this value 
+
+### ngForm directive ###
+1. ngModel & ngForm directives work together 
+2. ngModel takes inputs form the user and then  ngForm collects all ngModel data 
+   and submits .
+3. ngForm collects data as following object 
+   {
+       firsdtName: "Raktim" ,
+       lastName: "sarkar"
+   }   
+
+Usage of ngForm:
+1. Firstly, we have to tell the <form></form> that we ae using ngForm 
+   directive as following 
+   <form #contactForm = "ngForm">
+   </form>    
+//contactForm is a template variable which will store the object from ngForm
+2. Now we have to bind one event (ngSubmit) which means once user submits  
+   the form this method will be triggered  as following 
+   <form #contactForm = "ngForm (ngSubmit)="submit(contactForm.value)"></form>
+3. we have to add 'name' attribute along with ngModel as following for every <fieldset>
+    <div class="form-group">
+        <label for="exampleInputEmail1">Last Name</label>
+        <input type="LastName" ngModel name="lastName" class="form-control" id="LastNameInput" aria-describedby="emailHelp" placeholder="Enter Last Name">
+    </div>
+    //same for other fields as well firstName , email , password 
+4. cinfigure the submit method  button as following   
+    submit(form:any)
+    {
+        console.log(form);
+    this.contact.firstName =  form.firstName;
+    this.contact.lastName = form.lastName;
+    this.contact.password = form.password;
+    this.contact.email = form.email;
+
+    window.alert("Cart is successfully submitted by " + this.contact.firstName);
+    this.isSubmitted = true;
+    }   
+5. Create domain class and store all the above values as object 
+   i. export class contact{
+
+    firstName:string | undefined;
+    lastName:string | undefined;
+    email:string | undefined;
+    password:string | undefined;
+    }
+   ii. we are golablised the above values by using the above domain class 
+   iii. creating object of this class inside the checkout.ts 
+        contact = new Contact();
+### Hide & unhide form based on user inputs ###
+i. By default isSubmitted = false;
+<div class = "MyContainer" [hidden]="isSubmitted">
+
+    //the entire checkout.html will be there 
+</div>
+
+ii. The second div section as following (thank you page) won't show by default --
+<div [hidden] ="!isSubmitted">
+    <div class="jumbotron text-center">
+      <h1 class="display-3">Thank You!  {{contact.firstName}} for placing the order</h1>
+      <p class="lead"><strong>Please check your email {{contact.email}}</strong> for further instructions on how to complete your account setup.</p>
+      <hr>
+      <p>
+        Having trouble? <a href="">Contact us</a>
+      </p>
+      <p class="lead">
+        <a class="btn btn-primary btn-sm"routerLink="/" href="https://bootstrapcreative.com/" role="button">Continue to homepage</a>
+      </p>
+    </div>
+  </div>
+
+iii. change the submit() button as following --
+        submit(form:any)
+        {
+            console.log(form);
+        this.contact.firstName =  form.firstName;
+        this.contact.lastName = form.lastName;
+        this.contact.password = form.password;
+        this.contact.email = form.email;
+
+        window.alert("Cart is successfully submitted by " + this.contact.firstName);
+        this.isSubmitted = true;     //we are changing over here 
+        }
+
+        ***************************************************

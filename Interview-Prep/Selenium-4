@@ -1,0 +1,14 @@
+SELENIUM-4 features :
+
+1. Capture, Monitor & Mock the network requests & responses.
+2. Inject session cookies and perform basic Auth .
+3. Mock device coordinates for Mobile/Tab views.
+4. Check the monitor the site's performance
+5. Mock geolocations of users 
+6. Block the network requests 
+7. Mock faster / slower netwrk speeds.
+8. Execute and debug javaScript . 
+
+//whatever the chrome devtools do the above tasks from browsers , the same
+tasks we can also do now using selenium4 by writing automated script 
+

@@ -1,0 +1,53 @@
+This is to generalize the code as following -
+
+ADD PLACE :
+
+RestAssured.baseURI="XXXX";
+
+Response res=given().queryParam("key", "qaclick123").header("Content-Type","application/json")
+
+.body(add_place_json)
+.when().post("/maps/api/place/add/json").
+then().assertThat().statusCode(200). contentType("application/json")
+extract().response();
+
+
+GET_PLACE
+RestAssured.baseURI="XXXX";
+
+Response res=given().queryParam("key", "qaclick123").header("Content-Type","application/json")
+when (). get("/maps/api/place/get/json").
+then().assertThat().statusCode(200).contentType("application/json").extract().response();
+
+DELETE_PLACE 
+RestAssured.baseURI="XXXX";
+
+Response res=given().queryParam("key", "qaclick123").header("Content-Type","application/json")
+.body(“delete_Place_json”)
+.when().post("/maps/api/place/delete/json").
+then().assertThat().statusCode(200). contentType("application/json").extract().response();
+
+To generialse the above , we will use Request / response spec builder 
+
+Following is the summary -
+
+given().spec(new RequestSpecBuilder()).body().when().post()
+.then().spec(new ResponseSpecBuilder()).extract().response();
+
+sample:
+RequestSpecification req = new RequestSpecBuilder().setBaseUri(Utils.URL).addPathParams("key", "qaclick123")
+                         .setContentType(ContentType.JSON).build();
+
+ResponseSpecification res = new ResponseSpecBuilder().
+                            expectContentType(ContentType.JSON).
+                            expectStatusCode(200).build();
+
+RequestSpecification request = given().log().all().spec(req).body(ap);
+		
+String response = request.when().post("/maps/api/place/add/json")
+                            .then().spec(res).assertThat().
+                            extract().response().asString();
+                            
+System.out.println("***THE RESPONSE IS*** "  + response);                            
+		                        
+****** End ******

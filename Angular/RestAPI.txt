@@ -1,0 +1,59 @@
+How Angualr uses REST services to feed data into thier website ?
+
+Rule:
+If Angular feeds data from seviveces, then it delegets that access to service file only from there component will take those services and render into browser .
+Steps:
+ i. Create service
+    ng generate service library
+ ii. HTTPClient is a predefined service by angulr which will help to call REST Services
+    import {HttpClient, HttpClientModule } from '@angular/common/http';
+    constructor(private http:HttpClient) { }   
+ iii. import this module in app.module
+       import {HttpClientModule} from '@angular/common/http';
+
+       imports: [
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        HttpClientModule
+    ], 
+  iv.  Move to the service library.service.ts 
+         configUrl="http://216.10.245.166/Library/GetBook.php?AuthorName=foe";
+  
+        getBookDetails() : Observable<BookDetails[]> //Observable promise of BookDetails array returntype
+            {
+            return  this.http.get<BookDetails[]>(this.configUrl);
+
+            }   //the response is casted in <BookDetails>
+  v. Create one domain class i.e. BookDetails as following -
+     export interface BookDetails{
+                book_name:string;
+                isbn:string;
+                aisle:number
+
+                }  
+  vi.  Creating a library dashboard component 
+       ng generate component librarydashboard
+  vii. The functionality is like when the library page is loaded the bookdetails will be fetched 
+       so we will kep the code in ngOninit() in 
+       librarydashboard-component.ts
+
+       bookdetails: BookDetails[];  //arrayofbookdetails 
+       constructor(private lib : LibraryService) { }  //change1
+       ngOnInit(): void {
+
+        this.lib.getBookDetails().subscribe(data=> this.bookdetails=data);
+                         }        //change2   
+   //we are returing the getBookDetails() response which returns as a promise, we are resolving promise by using subscribe() and then
+   data variable will feed the data and will caste to the 'bookdetails'
+   interface variable. 
+  viii.   Configure the .html now
+          <tbody>
+            <tr *ngFor="let book of bookdetails; let ndx = index ">
+                <th scope="row">{{ndx + 1}}</th>
+                <td>{{book.isbn}}</td>
+                <td>{{book.aisle}}</td>
+                <td>@{{book.book_name}}</td> + 1
+            </tr>
+    </tbody>  
+                                                

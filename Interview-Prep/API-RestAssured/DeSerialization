@@ -1,0 +1,203 @@
+Serialization in RestAssured is a process of converting a java object into Request body (JSON PayLoad)
+when we will use a java object ina  json body we will use serialization
+Message m = new message();
+m.setTitle('devops');
+m.setID(1);
+given().when().body(m).post(/api/1).response();
+//body() will scan the java object and will convert into JSON as following 
+
+{
+    title: 'devops',
+    id:1
+}
+
+DeSerialization - RestAssured also supports this by converting Response 
+body back to java objects .
+when we want to scan the JSON responses , we will use Deseralization 
+
+
+
+Advantages : 
+i. Easy to parse and extract response values if they are wrapped as 
+   java object .
+ii. User friendly methods can be created which makes code more reuasble 
+
+Design approach :
+i. Java Object is constructed with the support of POJO class
+ii. POJO class is craeted with the request/response payload 
+
+Additional libraries required :
+i. for JSON we need Jackson, Jackson2 , Gson in the classpath
+ii. for XML we need JAXB.
+   <dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-core</artifactId>
+    <version>2.13.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.13.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-annotations</artifactId>
+    <version>2.13.0</version>
+</dependency>
+<dependency>
+    <groupId>com.google.code.gson</groupId>
+    <artifactId>gson</artifactId>
+    <version>2.8.9</version>
+</dependency>
+
+*****************
+Steps
+1. Create POJO classes based on the response of the API request 
+2. chain the classes and create the following Rest assured in test class
+   GetCourse gc  = given().queryParam("access_token", accessToken).expect().defaultParser(Parser.JSON)
+		.when().get("https://rahulshettyacademy.com/getCourse.php")
+		.as(GetCourse.class);
+		
+        System.out.println(gc.getLinkedIn());
+		
+		System.out.println(gc.getCourses().getMobile());
+
+3. GetCourse class -
+   package pojo;
+
+public class GetCourse {
+	
+	private String url;
+	private String services ;
+	private String expertise;
+	private Courses courses ;
+	private String instructor;
+	private String linkedIn;
+	
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public String getServices() {
+		return services;
+	}
+	public void setServices(String services) {
+		this.services = services;
+	}
+	public String getExpertise() {
+		return expertise;
+	}
+	public void setExpertise(String expertise) {
+		this.expertise = expertise;
+	}
+	public Courses getCourses() {
+		return courses;
+	}
+	public void setCourses(Courses courses) {
+		this.courses = courses;
+	}
+	public String getInstructor() {
+		return instructor;
+	}
+	public void setInstructor(String instructor) {
+		this.instructor = instructor;
+	}
+	public String getLinkedIn() {
+		return linkedIn;
+	}
+	public void setLinkedIn(String linkedIn) {
+		this.linkedIn = linkedIn;
+	}
+	
+}
+        
+Courses class --
+
+package pojo;
+
+import java.util.List;
+
+//Strategies in parsing complex nested JSON in pojo class getcourse.java
+public class Courses {
+	private List<WebAutomation> webAutomation ;
+	private List<Api> api;
+	private List<Mobile> mobile;
+	
+	
+	public List<WebAutomation> getWebAutomation() {
+		return webAutomation;
+	}
+	public void setWebAutomation(List<WebAutomation> webAutomation) {
+		this.webAutomation = webAutomation;
+	}
+	public List<Api> getApi() {
+		return api;
+	}
+	public void setApi(List<Api> api) {
+		this.api = api;
+	}
+	public List<Mobile> getMobile() {
+		return mobile;
+	}
+	public void setMobile(List<Mobile> mobile) {
+		this.mobile = mobile;
+	}
+	
+
+}
+
+Mobile class -
+package pojo;
+
+public class Mobile {
+	
+	private String courseTitle;
+	private String price;
+	
+	public String getCourseTitle() {
+		return courseTitle;
+	}
+	public void setCourseTitle(String courseTitle) {
+		this.courseTitle = courseTitle;
+	}
+	public String getPrice() {
+		return price;
+	}
+	public void setPrice(String price) {
+		this.price = price;
+	}
+	
+
+}
+same for API & WEBAUTOMATION 
+
+1. get the price of the first API object -
+ans -> gc.getCourses().getApi().get(1).getPrice()
+
+2. get the price of the api whose courseTitle = 'SOAPUI Webservice testing'
+ans  -> 
+int size = gc.getCourses().getApi().size();
+          for(int i = 0; i<size;i++)
+          {
+        	  
+        	  if(gc.getCourses().getApi().get(i).getCourseTitle().equalsIgnoreCase("SoapUI Webservices testing"))
+        	  {
+        		  System.out.println(gc.getCourses().getApi().get(i).getPrice());
+        		  
+        	  }
+        	  
+          }
+
+3. print all the course title name of 'webautomation'
+int sizeweb = gc.getCourses().getWebAutomation().size();
+          for(int i = 0; i< sizeweb;i++)
+          {
+        	  System.out.println("COURSE TITLE IS : " + gc.getCourses().getWebAutomation().get(i).getCourseTitle());
+        	  
+          }          
+**********************
+

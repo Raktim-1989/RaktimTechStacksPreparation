@@ -1,0 +1,446 @@
+1.  //LOCAL LABEL
+    pm.variables.set("name" , "devops")
+
+    //collection label
+    pm.collectionVariables.set("title" , "john")
+    let id = pm.collectionVariables.get("titile");
+    console.log('value for name ' + id)
+
+    //global
+    pm.globals.set("title" , "henry");
+    //ENV 
+    pm.environment.set("QA" , "MYQA");
+
+2. Precedence(Priority) - LD  ECG 
+        Local
+        Data
+        Env
+        Collection
+        Global
+3. Concept is like following -
+   we have diff environemnts like QA , Staging , sandbox , production 
+   for all envs, following may change
+   username 
+   password
+   endPointuRL
+4. newman : to drive the api testing from cmd promot
+             npm install -g newman 
+
+ 
+ 5. Running API collection from local server terminal 
+    i. export the collection in a .json file in your desktop
+    ii. in terminal go to the location and enter following -  
+        newman run DemoScript.postman_collection.json
+ 6. Running API collecion from any remote server 
+    i. go to the collection and click share
+    ii. click 'via Json link' and copy the JSON link 
+    iii. in terminal enter following 
+         newman run https://www.getpostman.com/collections/0d450c5c45f00ab3e7b1
+
+
+  **************************
+  Creating your own API server 
+
+  1. npm install -g json-server
+  2. json-server --watch db.json
+
+  link: https://github.com/typicode/json-server
+  
+                
+ 
+            
+   https://automationreinvented.blogspot.com/2022/03/top-80-api-testing-interview-questions.html?m=1
+
+
+********************************
+INTERVIEW questions
+
+1. What is HEAD method?
+
+The HEAD method asks for a response identical to that of a GET request,
+ but without the response body.
+This is useful for retrieving meta-information written
+ in response headers, without having to transport the entire content.
+
+2. Automate GET method and validate status code?
+ 
+ @Test(description="Verify status code for GET method-users/2 as 200")
+ public static void verifyStatusCodeGET() {
+     
+     Response resp=given().when().get("https://reqres.in/api/users/2");
+     assertEquals(resp.getStatusCode(),200);
+     
+ }
+
+ 3. Automate GET method and fetch response body?
+ 
+ @Test(description="Verify status code for GET method-users/2 as 200")
+ public static void verifyStatusCodeGET() {
+     
+     Response resp=given().when().get("https://reqres.in/api/users/2");
+     assertEquals(resp.getBody().asString(),200);
+     
+ }
+
+ 4. How to automate POST method in Rest Assured?
+
+@Test(description="validate with jsonpath and json object and pass post body as json file")
+    public void MethodValidationPOST() throws IOException, ParseException {
+       
+            FileInputStream file = new FileInputStream(new File (System.getProperty("user.dir")+"\\TestData\\put.json"));
+
+            Response resp =
+                    given().header("Content-Type" , "application/json").body(IOUtils.toString(file,"UTF-8")).
+                    when().post("https://reqres.in/api/users");
+
+            assertEquals(resp.getStatusCode(),201);
+            assertEquals(resp.path("job"),"tester");
+      
+    }
+
+5. How to use Oauth authentication in automation?  
+    
+        Response resp4 = given()
+                .auth()
+                .oauth("consumerKey", "consumerSecret", "accessToken", "secretToken").when().get("https://reqres.in/api/users/2");
+
+6. What are main differences between API and Web Service?
+
+    - All Web services are APIs but not all APIs are Web services.
+    - Web service uses three styles of use: SOAP, REST and XML-RPC for communication whereas   API  may be exposed in multiple ways.
+   -  Web service needs a network to operate but APIs don’t need a network to operate.
+
+7. How to use header for authorization(oauth2) in automation?
+
+        Response resp5 = given().header("Authorization","accessToken")
+                    .when().get("https://reqres.in/api/users/2");
+                
+    }
+
+8. What is Schema?
+ Schema is nothing but a JSON file. It will have only datatype information and the expected keys of the JSON. There won't be any values present in the schema. 
+
+9. How to automate schema validation:
+
+Step-1: Add below dependency:
+    implementation group: 'io.rest-assured', name: 'json-schema-validator', version: '4.4.0'
+
+    testImplementation 'org.hamcrest:java-hamcrest:2.0.0.0'
+
+    testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: '1.1'
+
+
+Step-2: Load expected schema
+Load the expected "schema.JSON" in a file object.
+You can create a schema from json using below website:
+
+https://www.liquid-technologies.com/online-json-to-schema-converter
+
+
+Step:3. Validate using matchesJsonSchema
+validate the response body using the matchesJsonSchema method. 
+
+
+
+	@Test
+
+	public void givenUrl_validateSchema() throws FileNotFoundException, IOException {
+
+		ExtentReport.extentlog = ExtentReport.extentreport.startTest("validateResponseBodyPojoPost",
+
+				"Validate the status code for GET users endpoint");
+
+		 
+
+		File schema = new File(System.getProperty("user.dir")+"/JsonSchema.json");
+
+		RestAssured.given().get("https://reqres.in/api/users").
+
+		
+
+		      then().body(JsonSchemaValidator.matchesJsonSchema(schema));  
+
+
+   }
+
+COMMON ERROR found in schema validations are:
+Error:(common errors in your current project)
+
+object has missing required properties 
+
+instance type (integer) does not match any allowed primitive type (allowed: ["string"])
+
+TO COMPARE SCHEMA MANUALLY use below website:
+http://www.jsondiff.com/
+
+
+10. Creating different testcases for get & post -
+How to Create API Testing positive and negative scenario's from the provided API endpoint?
+Prac: https://reqres.in/
+
+Target : GET - https://reqres.in/api/users?page=2
+
+Test Cases on GET:
+
+1. Scenario Related to Query param (create test data with both key(page) and value(2))
+
+TEST API ENDPOINT: GET - https://reqres.in/api/users?page=2
+
+        https://reqres.in/api/users?page=00002
+
+	https://reqres.in/api/users?page=teststring
+
+	https://reqres.in/api/users?page= 1
+
+	https://reqres.in/api/users?page=1.45666777
+
+	https://reqres.in/api/users?page=@#$%
+
+	https://reqres.in/api/users?test=1
+
+	https://reqres.in/api/users?page=2test
+
+	https://reqres.in/api/users?page=*2*
+
+	https://reqres.in/api/users?"page"=2
+
+	https://reqres.in/api/users?page=2//
+
+	https://reqres.in/api/users?page=2\\
+
+	https://reqres.in/api/users?page=//2//
+
+	
+
+2. Scenario related to server address
+
+        http://reqres.qa/api/users?page=2
+
+	http://retest.in/api/users?page=2
+
+	
+
+3. Scenario related to end point
+
+   https://reqres.in/test/users?page=//2//
+
+   https://reqres.in/API/users?page=2 
+
+   
+
+4. Scenario related to Protocol
+
+   http://reqres.in/api/users?page=2
+
+   https://reqres.in/api/users?page=2
+
+   Try to test with both https and http protocol   
+
+
+
+Test Cases on POST:
+
+Let you have a POST method with endpoint as:  https://reqres.in/api/register
+
+and request body as below:
+
+{
+
+    "email": "eve.holt@reqres.in",
+
+    "Password": "pistol"
+
+}
+
+
+
+Now lets create some of the test scenarios to check on Request Body format for the POST method:
+
+1.Try with wrong password
+
+  {
+
+    "email": "eve.holt@reqres.in",
+
+    "password": "tdstcwcdygwec544"
+
+  }
+
+O/P:200(coz its a prac api)
+
+2.
+
+{
+
+    "EMAIL": "eve.holt@reqres.in",
+
+    "password": "tdstcwcdygwec544"
+
+}
+
+O/P:400 status code
+
+3.
+
+{
+
+    "email": "eve.holt@reqres.in"   
+
+}
+
+O/P: 400 status code
+
+4. Try to change the domain
+
+{
+
+    "email": "eve.holt@reqres.com",
+
+    "password": "tdstcwcdygwec544"
+
+}
+
+O/P: 400
+
+5.
+
+{
+
+    "email": "eve.holtwww@reqres.in",
+
+    "password": "tdstcwcdygwec544"
+
+}
+
+O/P: 400
+
+6.TRy to change the key name from password to test
+
+{
+
+    "email": "eve.holt@reqres.in",
+
+    "test": "pistol"
+
+}
+
+Status: 400
+
+7.
+
+{
+
+    "username": "eve.holt@reqres.in",
+
+    "password": "tdstcwcdygwec544"
+
+  }
+
+O/P:200
+
+11. Assume that you have response body as below, if you want to fetch
+ all the key and value of id=2 then what method you will use?
+
+data": [
+        {
+            "id": 1,
+            "email": "michael.lawson@reqres.in",
+            "first_name": "Michael",
+            "last_name": "Lawson",
+            "avatar": "https://reqres.in/img/faces/7-image.jpg"
+        },
+        {
+            "id": 2,
+            "email": "lindsay.ferguson@reqres.in",
+            "first_name": "Lindsay",
+            "last_name": "Ferguson",
+            "avatar": "https://reqres.in/img/faces/8-image.jpg"
+        },
+Ans: Map<String, String> dataEmp = resp.jsonPath().getMap("data[1]");
+
+12. How to Create fake REST API using Json-server and use from Postman to perform API Testing?
+
+Step-1:
+Download node js, refer below link:
+https://nodejs.org/en/download/
+
+Open a command prompt (or PowerShell), and enter the following:
+
+node –v
+The system should display the Node.js version installed on your system. You can do the same for NPM:
+
+npm –v
+For above two commands you should get response as below :
+
+
+C:\Users>node -v
+v10.16.3
+
+C:\Users>npm -v
+6.9.0
+
+
+Step:2
+
+npm install -g json-server
+
+Step-3
+
+Create a json file as db.json and open cmd in that path
+Define the json format:
+{
+  "employees": [
+    {
+      "id": 1,
+      "first_name": "sidharth",
+      "last_name": "shukla",
+      "email": "sidharth@automationreinvented.com"
+    },
+    {
+      "id": 2,
+      "first_name": "Steve",
+      "last_name": "smith",
+      "email": "steve@automationreinvented.com"
+    },
+    {
+      "id": 3,
+      "first_name": "virat",
+      "last_name": "kohli",
+      "email": "virat@automationreinvented.com"
+    }
+  ]
+}
+
+Step-04:
+
+Run the below command from command prompt
+json-server --watch db.json
+
+
+Step-05:
+
+By Default it will take localhost:3000, Now we can open URL http://localhost:3000/employees in the browser
+
+Step-06:
+How to test in Postman?
+Just open postman tool and ru below URI:
+It's possible to extend URLs with further parameter. E.g. you can apply filtering by using URL parameters like you can see in the following:
+
+
+http://localhost:3000/employees?last_name=shukla
+http://localhost:3000/employees?first_name=sidharth
+http://localhost:3000/employees/1
+
+Validate the status code and response body.
+
+Step-07:
+
+The following HTTP endpoints are created automatically by JSON server:
+
+GET    /employees
+GET    /employees/{id}
+POST   /employees
+PUT    /employees/{id}
+PATCH  /employees/{id} 
+
+So all the above methods can be tested both from Postman or Rest Assured.

@@ -1,0 +1,199 @@
+### Built in Structural Directives ###
+1. Structural directives are responsible for HTML layout
+2. They shapr or reshape the DOM structure by adding , removing and manupulating the host elements to which they are attached.
+3. there are 3 directives: ngFor, ngIf,ngSwitch
+   i. ngFor 
+   <div *ngFor="let product of products">
+    <h2>{{ product.name }}</h2>
+    <h2>{{ product.price }}</h2>
+    <h2>{{ product.description }}</h2>
+  </div>
+
+  ii. ngIf
+  <div *ngFor="let product of products">
+    <h2>{{ product.name }}</h2>
+    <h2>{{ product.price }}</h2>
+    <h2>{{ product.description }}</h2>
+    <p *ngIf = "product.price<700">Course is available for discount</p>
+  </div>
+
+**********************************************************
+### Sharing data between parent & child component ###
+1. The concept is like when we have all the codes under a single block as above, we can distribute it by making parent-child
+2. we have to chain the relationship in such a way that when child gives any output we have to delegete that into parent 
+Changes to be done as of following ---
+i. ng generate component alert-details
+   alert-details.component.html 
+   <p *ngIf="product.price<700">Course is available for discount</p>
+   //we have pulled of the above code from parent component 'product-details' to child componet 'alert-details'
+   //Now we have a problem in the above piece of code as the 'product' variable is not mentioned in the component level as it was there in the other parent component.To resolve this, we will have to do following --
+   we have to send 'input' to the child component so that the child can identofy the 'product'
+   i. In childcomponent.ts file 
+        @Input() product: any;     //@input menas its coming from parent component
+   ii. we have to do property binding in parent component as of following-
+        <app-alert-details  [product]="product"></app-alert-details>
+     //it means we are puting the life of this [product] variable (declared as @input in child) from 'product' variable of parent component
+     //this is called binding property i.e. 'property binding' from parent to child component
+     //we have to give [] receiving brackets while doing property binding
+   
+ii. Now, in parentcomponent.html we need to tell the .html to render to child component as folloiwng -
+ <div *ngFor="let product of products">
+    <h2>{{ product.name }}</h2>
+    <h2>{{ product.price }}</h2>
+    <h2>{{ product.description }}</h2>
+   //child component code 
+  </div>
+  
+//pass the selector 'app-alert-details' tag over there
+product-details.html ->
+<div *ngFor="let product of products">
+    <h2>{{ product.name }}</h2>
+    <h2>{{ product.price }}</h2>
+    <h2>{{ product.description }}</h2>
+      
+      <app-alert-details [product]="product"></app-alert-details>
+  </div>
+
+//now it will render the abobve .html code into browser !!
+
+******************************************************
+### Event Binding ###
+Event-> on clicking the 'check availability' button a windoe popup will be displayed 
+i. In the child component.ts file write the following -
+  
+  @Input() product: any;    //this product has a life which is coming   from parent
+  clickMe()
+   {
+     window.alert(this.product.name + 'Course vidoes are available in your location to purchase');
+   }
+ii. Now in the child component.html , configure the following -
+   <button class="btn btn-primary"  (click)="clickMe()">Check Availability</button>    
+
+Now in the above case, we are keeping the clickMe() method in childcomponent and also we are calling the method from child html only
+
+-->  Now what will be the case if we want to keep the method in the parent component
+ and we 
+want to call the method from child
+its like from child toparent 
+Below is the approach <--
+
+### child to parent communication using @output ###
+Scenario: Event Binding [] with @output directive by creating
+          custom evenets like notify()
+Steps:
+i. create the clickMe() in the parent component.ts 
+   clickMe(product:any)
+   {
+       window.alert(product + "this course is available for discount");
+   }
+ii. In the parentcomponent.html file configure the following inside the childcomponent code
+<app-alert-details [product]="product" (notify)="clickMe(product.name)"></app-alert-details>
+//this means, whenever the custom event notify() will be emitted 
+  clickMe() method will be triggered
+iii. Go to childComponent.html and configure the following --
+<button class="btn btn-primary"  (click)="clickChildMe()">Check Availability</button>    
+iv. In the childcomponent.ts file create this clickChildMe() method
+      clickChildMe()
+      {
+        this.notify.emit();    //here notify() custom even is triggered 
+      }
+    Also, create an @output notify variable which means this value will 
+    be coming from child to parent
+    @output notify = new EventEmitter<ProductContract>(); 
+
+So the flow is like following --
+Once user clicks on [check availability] button , the clickChildMe() method
+from the childcomponent.ts gets loaded -> the custom method notify() is emitted 
+-> it will render to the parentcomponent.html and -> clickMe() method
+from the parentcomponent.ts gets executed -> the window alert is displayed 
+
+*******************************************************
+Updating HTML Attributes of Angular with property & event binding
+
+Scenario: On clicking [Enable/Disable Buying] button the [check availability]
+          button becomes enabled & disabled 
+          By default the [check availability] is disabled
+
+Steps:
+1. In Parentcomponent.html create the button first
+   <button class = "btn btn-primary" >Enable/Disable Buying</button>
+2. Now go to the childComponent.html and implement the functionality of disabled
+  <button [disabled]=true class="btn btn-primary"  (click)="clickChildMe()">Check Availability</button>    
+  //the button by default will be disabled now 
+3. Now write one method in parentcomponent.ts i.e. enableBuying()   
+   and on clicking/executing this method the disabled[] property becomes true
+   i. In parentcomponent.ts
+      isUnchanged:any = true;
+      enableBuying()
+      {
+            this.isUnchanged = !this.isUnchanged;
+      }
+
+   ii. In Parentcomponent.html file configure the following button tag
+       it means the 'isUnchanged' becomes false 
+       <button class = "btn btn-primary" (click)="enableBuying()">Enable/Disable Buying</button>
+   iii. Now go to childComponent.html where the [check availability] button 
+        is hosted and configure as folloiwng
+        <button [disabled]=isUnchanged class="btn btn-primary"  (click)="clickChildMe()">Check Availability</button>    
+        
+        //But since this [isUnchanged] variable comes from parent to child we have to confiure 
+        two changes as following -
+        a. In childComponent.ts 
+         @Input() isUnchanged:any;
+        b. in parentcomponent.html inside the childcomponet selector <section>
+          <app-alert-details  [isUnchanged]=isUnchanged (notify) ="clickMe(product.name)"></app-alert-details>
+          //it means this [isUnchanged] property from child is getting life from 
+            isUnchanged from parent
+       
+*******************************
+ng-templates & ng-containers and where to use them effectively
+
+Scenario: 
+ if the product quantity is greater than zero then the [check availability]
+ button should be displayed else a message should be displayed 'product is not available to buy'
+  Every .html file is a template
+    if product.quantity>0  execute template1 
+    else
+    execute template2
+    template1: html code where the button is displayed
+    template2: html code where the text prints
+    
+  Steps:
+    1. In childcomponent.html 
+        <ng-template #template1>
+          <button [disabled]=isUnchanged class="btn btn-primary"  (click)="clickChildMe()">Check Availability</button>    
+        </ng-template>
+
+        <ng-template #template2>
+          <p>Product is not available to buy</p>
+        </ng-template>
+    2. bind this under div tag as following --
+       <div *ngIf="product.quantity>0 then template1 else template2">
+          <ng-template #template1>
+            <button [disabled]=isUnchanged class="btn btn-primary"  (click)="clickChildMe()">Check Availability</button>    
+          </ng-template>
+          
+          <ng-template #template2>
+            <p>Product is not available to buy</p>
+          </ng-template>
+       </div>
+
+ng-container: ng-container holds condiions during the runtime of your html block
+<ng-container *ngIf="product.quantity>0 then template1 else template2"></ng-container>
+      <ng-template #template1>
+        <button [disabled]=isUnchanged class="btn btn-primary"  (click)="clickChildMe()">Check Availability</button>    
+      </ng-template>
+       
+      <ng-template #template2>
+        <p>Product is not available to buy</p>
+      </ng-template>
+      
+
+
+
+
+
+
+
+
+          

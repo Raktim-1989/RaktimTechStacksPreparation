@@ -1,0 +1,108 @@
+1. Kubernetes uses objects to represent the state of your cluster
+2. what containerized apps are running and which node
+3. the polices around how these apps behave like restart policies , upgrades and fault tolerance
+4. once u create object , k8s will constantly work to ensure that object exists 
+   and maintains clusters desired state . 
+5. Every k8s object include two nested fields 
+   object spec & object status 
+6. spec - desired state and status - actual state 
+7. All obejcts are identified by unique name & ID 
+8. Objects are -
+   i. pod
+   ii. Service
+   iii. volume
+   iv. deployment
+   v. namespace
+   vi. replicaset 
+   vii. secrets
+   viii. configmaps
+
+### Kubernetes Object ###
+1. It represents JSON / YAML
+2. we create them using mainfest and push into API
+
+Relationship between objects
+1. POD manages containers
+2. Replicasets manages PODs
+3. services exposes POD process to outside world
+4. config maps and secrets helps you configure pods 
+
+state of the object 
+i. Replicas(2/2)
+ii. Image(Tomcat)
+iii. Name
+iv. Port
+v. Volume 
+vi. startup
+vii. detached 
+
+kubernetes object management
+i. imperative commands: development projects
+ii. declarative object : writing yaml file 
+
+### Fundamentals of POD ###
+1. When a pod gets created , it is scheduled to run in any node in the cluster 
+2. POD remains on the node untill the pod gets deleted , node crashes , pod is      evicted for lack of resources . 
+3. If a pod is scheduled to a node that fails , pod is deleted
+4. if a node dies , the pods scheduled to that node gets deleted 
+5. A give pod is not 'rescheduled' to a new nod e, instaed it will be replaced by a new pod with a new UID.
+6. Volume in a POD will exists as long the POD exist 
+
+
+### LAB ###
+1. Go to AWS account - Launch instance
+2. ubuntu 18.04 - t2.medium ( 2 CPU)
+3. access EC2 via putty   //login as ubuntu
+4. sudo su
+5. sudo apt update && apt -y install docker.io
+6. install kubectl now !! 
+   install Kubectl
+   curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
+7. install Minikube
+   curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/   
+8. apt install conntrack
+9. minikube start --vm-driver=none    //only first time , next time only minikube start
+10. minukube status 
+11. kubectl version
+
+now use kubectl commands !!
+kubectl get nodes 
+name   status   roles   age   version
+
+kubectl describe node ip-172.23.34.45
+kind: Pod
+apiVersion: v1
+metadata:
+  - name: testpod
+spec:
+  container: 
+    - name: c00
+      image: ubuntu
+      command: ["bin/bash" , "-c", "while true";
+                 do echo Hello-Raktim; sleep 5 ;done"]
+
+
+executing pod 
+
+kubectl apply -f pod1.yml
+o/p -> pod/testpod created 
+
+kubectl get pods 
+o/p -> testpod 1/1/ running
+
+if we want to see where excatly the pod is running
+kubectl get pods -o wide 
+
+check all the stpes inside the pod
+kubectl describe pod testpod
+
+kubectl logs -f testpod
+kubectl logs -f testpod -c c00 //for container c00
+kubectl exec testpod -it -c c00 /bin/bash     //inside container
+
+
+kubectl delete pod testpod
+
+
+
+

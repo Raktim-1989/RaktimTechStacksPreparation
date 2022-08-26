@@ -1,0 +1,50 @@
+1. Angular routing is a concept when we want to navigate between pages and feed data
+2. Routing enables developers to build single page applications with    multiple views and allow navigation between these views. 
+   Routing basically means navigation between pages 
+Steps:
+1. create one component product-shopdetails ng generate component product-shopdetails
+2. Now configure the app-routing.module.ts file as following -
+   const routes: Routes = 
+    [
+    {path:'products/:productId', component:ProductShopComponent},
+    {path:'products', component:ProductDetailsComponent},
+    {path:'', component:LandingpageComponent},
+    {path:'cart', component:CartItemsComponent},
+    {path:'checkout', component:CheckoutformComponent},
+    {path:'library', component:LibrarydashboardComponent}
+    ];
+3. Add router link to the product-details page to land into product-shop  
+   page --
+   i. go to the productdetails.html file and do following-
+      <a [routerLink]="['/products' , product.id]" class="mt-0 font-weight-bold mb-2">{{ product.name }}</a>
+   ii. The flow is like -> from this routerlink it will
+       navigate to the URL and then will check the same URL in app-routing.ts file and then it will check the corresponding component. If it finds a matching component it will render that compone.html in browser !!
+   iii. In app.component.html configure following -
+        <router-outlet></router-outlet>
+        //we are delegating our app componet access to router by giving this router-outlet tag , it will go to the app-routing.ts file and load that component
+
+### ActivatedRoute Service & Dependency Injection ###
+1. In case of routing, we have to use the ActivateRoute service so that 
+   it can catch the URL , by injecting the service in the component class constructor by creating its object
+    constructor(private route: ActivatedRoute)  //dependency injection
+   {
+         
+   }
+ //this concept is called dependency injection
+ Below is the concept --
+ Scenario: On clicking individua link from productdetails page the 
+           correspodning productshoping page should be displayed.
+ 1. when user clicks on 'selenium' link(whose id =1) from 'rpductdetails' 
+    page , the productshop componet will be loaded. Now, the URL for selenium link will be /products/1 -> productshop component will have to catch this URL by using the 'ActivateRoute' service object. 
+
+ 2. ngOnInit() is the method which will be executed first when the 
+    productshop component is loaded.  we are keping the folowing code over there
+     ngOnInit(): void {
+    
+     const routeParams = this.route.snapshot.paramMap; //this will take snapshot of the URL 
+     const id = Number(routeParams.get('productId'));  //this will return 1 for selenium 
+     this.product = products.find(product=>product.id === id);  //if the id matches with products array id , then it will store the product inside this variable
+
+     }
+  3. Once we get the product variable we can use this in .html file to render the details in the browser 
+

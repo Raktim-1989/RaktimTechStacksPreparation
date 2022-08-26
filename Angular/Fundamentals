@@ -1,0 +1,78 @@
+1. Angular is a typescript based web application framework for developing 
+   web applications & mobile applications
+2. Pre-requisites:
+   i. Node.js -> an open source run time environment to run javascript / typescript code. It runs on google v8 enginee and execute the .js & .ts code outside of web browser. 
+   ii. Download Visual Studio Code as editor
+
+### Building Angular components for app development ###
+1. Install the Angular CLI dependencies 
+   npm install -g @angular/cli    -> give this command in admin mode from cmd prompt
+2. Create Angular workspace 
+   ng new <projectname>
+   Following important modules will be generated automatically
+   node_modules
+   src
+     app
+       components   //auo generated
+         component.css
+         component.html
+         component.ts
+         component.spec.ts
+       app-routing.module.ts  //important
+       app.component.html
+       app.module.ts //important  - all compoennets should be displayed
+   angular.json
+   karma.conf.js
+   package.json
+   tsconfig.json      
+3. Start the server 
+   ng serve --open
+4. Components are building blocks in UI for developing angular apps
+   i. it consists of HTML
+   ii. a typescript class where we will write the logic of front end behavior
+   iii. css 
+   iv. testspec file for writing unit / integration test cases to test component
+5. ng generate component <componentname>
+6. Once we create components, the most importan file created is component.ts file where the following configurations are configured by default
+@Component({
+  selector: 'app-alert-details',
+  templateUrl: './alert-details.component.html',
+  styleUrls: ['./alert-details.component.css']
+})
+//'selector' part is most important , here we are asking angualr to render this component into html file(browser side)
+//now if we want to see the coresponding html in browser we will have to do following in app.component.html which is the main .html--
+in app.component.html file -> <app-alert-details></app-alert-details>
+
+### Interpolation in Angular ###
+1. Interpolation is a process in angular which allows dynamic string values into your HTML templates. 
+2. By default, interpolation uses {{}} as delimiters.
+   title:string = "Raktim Sarkar"
+   <h2>{{title}}</h2>
+3. How we can use other file data in our existing component.ts file
+   i. we have a products.ts (variable products) file where we kept our testdata 
+   ii. now if we want to use those test data into our product-details.component.ts file we will do following --
+    import { products } from 'src/data/products';
+    import { ProductContract } from 'src/productContract';
+    
+    products : ProductContract[] = products;   //declaring local variable and assign the products variable data into local products variable
+    //ProductContract is an interface
+    ProductContract.ts file -> 
+    export interface ProductContract =
+    {
+        name: string ,
+        price: number,
+        description: string
+    }
+   iii. in the product-details.html file render the following -
+        <h2>{{products[0].name}}</h2> 
+        <h2>{{products[0].price}}</h2> 
+        <h2>{{products[0].description}}</h2> 
+        
+         <h2>{{products[1].name}}</h2> 
+         <h2>{{products[1].price}}</h2> 
+         <h2>{{products[1].description}}</h2> 
+    we have a problem over this, if we have 100 products we have to mention here like this. we will use looping concept like ng-for !!!
+
+
+   
+   

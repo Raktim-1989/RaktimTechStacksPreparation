@@ -1,0 +1,35 @@
+1. Basics of Angular and pre-requisites of installation
+2. node.js and how to install angualar workspace , projects & dependencies
+3. How to run server using ng serve --open command
+4. different configuraion files (default created) in angular like
+   package.json , angular,json , karma.conf.js , app.module.ts , app-routing.module.ts
+5. Components & building blocks in angular
+6. Importance of 'selector' in @components under componet.ts file
+7. how to render component.ts into component.html file 
+8. Interpolation {{}} concept in Angular
+9. Built in structural directives in Angular
+10. ngFor , ngIf , ngSwitch concept in Angular and how to use them
+    effectively in html file
+11.  How to share data between parent to child component using @Input
+12. How to communicate from child to Parent using @Output   
+13. Concept of Event Binding & Property Binding in Angular
+14. How to update html attributes of angular using event & property  
+    binding.
+15. ng-templates & ng-containers and how to use them effectively
+16. css & bootstrapping concept and implement into .html 
+17.  Angular Routing &  Dependency Injection 
+18. ActivateService concept and its implementation for page navigation
+19. Build functional logic into component method like onkey() event
+20. ngModel two way binding (propertybinding & eventbinding)
+21. Consuming HTTP REST service Json data into angular components to render
+    Using HTPClient service , wiritng once customised method in that 
+    service i.e. getBookDetails() , using http.get() method
+    resolve the promise after returing the json data using subscribe()
+    method , finally render data into UI 
+    
+
+******************
+Deploying angular in TomCat Server 
+https://www.google.com/search?q=how+to+deploy+angular+project+on+tomcat+server&rlz=1C1GCEU_enIN998IN998&biw=1280&bih=520&sxsrf=ALiCzsaXEGM5U8a4SGacnY533YbKvdHrRQ%3A1651392768883&ei=AEFuYpq8NcichwPMs6mIAg&oq=how+to+deploy+angular+project+&gs_lcp=Cgdnd3Mtd2l6EAMYAzIFCAAQgAQyBQgAEIAEMgUIABCABDIFCAAQgAQyBQgAEIAEMgUIABCABDIFCAAQgAQyBQgAEIAEMgUIABCABDIFCAAQgAQ6BwgjEOoCECc6BwguEOoCECc6BAgjECc6BAgAEEM6BQgAEJECOgsIABCABBCxAxCDAToICC4QsQMQgwE6EQguEIAEELEDEIMBEMcBEKMCOggIABCABBCxAzoICAAQsQMQgwE6CggAEIAEEIcCEBRKBAhBGABKBAhGGABQ2ApYpDhgp1JoAXABeAKAAYsCiAGtJJIBBjAuMjguMpgBAKABAbABCsABAQ&sclient=gws-wiz#kpvalbx=_DUFuYoiuFtGW-AbvpYOQDA17
+
+

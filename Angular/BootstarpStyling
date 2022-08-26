@@ -1,0 +1,100 @@
+1. Bootstrap is an open source css framework for desgning responsive webpages
+2. It firts in mobile screen as well as web screen .
+3. we will deal here with .css file
+
+example:
+.button {
+  background-color: #4CAF50; 
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+4. In Html we will mention the styling of that particualr element in a class
+   <button class = "my-btb">Button</button>
+   In css do following 
+   .my-button {
+      background-color: #4CAF50; 
+      border: none;
+      color: white;
+   }
+5. In bootsrap we can get all the inbuild class 
+   <button type="button" class="btn btn-primary">Primary</button>
+    <button type="button" class="btn btn-secondary">Secondary</button>
+    <button type="button" class="btn btn-success">Success</button>
+    <button type="button" class="btn btn-danger">Danger</button>
+    <button type="button" class="btn btn-warning">Warning</button>
+    <button type="button" class="btn btn-info">Info</button>
+    <button type="button" class="btn btn-light">Light</button>
+    <button type="button" class="btn btn-dark">Dark</button>
+
+    <button type="button" class="btn btn-link">Link</button>
+
+### Installtion ###
+i. npm install bootsrap
+ii. npm install jquery
+
+once we install the above we will see the bootsrap assets will be installed in 
+node_modules/bootsrap folder
+
+iii. Open Angular.json file of yr project and includethe following 3 files:
+      "styles": [
+      "src/styles.css",
+      "node_modules/bootstrap/dist/css/bootstrap.min.css"
+
+      ],
+      "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "node_modules/jquery/dist/jquery.min.js"
+                 ]
+
+//to make the changes in your angular page , restart the server 
+  ng serve --open
+
+iv. search bootstarp product list template and copy the .html in yr .html file 
+
+Note: If we want a uniform background throughout all pages of the application
+      we have to configure style.css as following 
+      style.css 
+      /* You can add global styles to this file, and also import other style files */
+      body {
+         background: linear-gradient(to right, #c04848, #480048);
+         min-height: 100vh
+      }
+
+ ### Implelement headers across all pages ###
+ 1. grab a sample bootstrap navigation header from bootstrap
+ 2. In app.component.html do following before the router-outlet tag  --
+    This is the mail file from where the page renders 
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Raktim_AutomationZone</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" routerLink="/products" >Products <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/library">Library</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" routerLink="/cart" >Cart</a>
+          </li>
+        </ul>
+        </div>
+</nav>
+<router-outlet></router-outlet>
+
+******************************************************
+
+
+  
+
+
+

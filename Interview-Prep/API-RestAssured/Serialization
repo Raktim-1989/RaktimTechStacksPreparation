@@ -1,0 +1,52 @@
+Serialization is the proces of converting JSON to Java object 
+We will use this concept when we will add JSON body as an object in 
+POST Request
+String response = given().queryParam("key", "qaclick123").body("")
+		.when().post("/maps/api/place/add/json")
+		.then().assertThat().statusCode(200).extract().response().asString();
+
+sample json 
+{
+    "location": {
+      "lat": -38.383494,
+      "lng": 33.427362
+    },
+    "accuracy": 50,
+    "name": "Frontline house",
+    "phone_number": "(+91) 983 893 3937",
+    "address": "29, side layout, cohen 09",
+    "types": [
+      "shoe park",
+      "shop"
+    ],
+    "website": "http://google.com",
+    "language": "French-IN"
+  }
+  
+customize the object of the pojo class 
+AddPlace ap = new AddPlace();
+		ap.setAccuracy(50);
+		ap.setAddress("29, side layout, cohen 09");
+		ap.setLanguage("French-IN");
+		ap.setWebsite("http://google.com");
+		ap.setPhone_number("8777244144");
+		ap.setName("Frontline house");
+		
+		List<String> types = new ArrayList<String>();
+		types.add("shoe park");
+		types.add("shop");
+		ap.setTypes(types);
+		
+		Location lc = new Location();
+		lc.setLat(-38.383494);
+		lc.setLng(33.427362);
+		ap.setLocation(lc);
+        
+//now pass the java object ap in json body 
+In desrialization , we use set() methods where as in DeSerialization
+we use get() 
+
+
+  
+
+
